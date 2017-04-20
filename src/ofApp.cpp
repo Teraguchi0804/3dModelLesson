@@ -1,5 +1,6 @@
 #include "ofApp.h"
 
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE); //ログレベルを取る(表示する)
@@ -7,10 +8,19 @@ void ofApp::setup(){
     
     ofDisableArbTex(); // we need GL_TEXTURE_2D for our models coords. openGLでテクスチャ画像を使用するための準備的なやつ
     
+    ofSetFrameRate(60);
+    ofEnableSmoothing();
+    
+//    camera.lookAt(ofVec3f(0,0,0));
+//    camera.setPosition(0,100,0);
+    
+    
+    
     bAnimate = false;
     bAnimateMouse = false;
     animationPosition = 0;
     
+    model.setScale(0.5, 0.5, 0.5);
     model.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
     model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
     model.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
@@ -31,15 +41,25 @@ void ofApp::update(){
     }
     
     mesh = model.getCurrentAnimatedMesh(0);
+    
+    camera.lookAt(ofVec3f(model.getPosition().x,model.getPosition().y,model.getPosition().z));
+    camera.setPosition(200*cos(ofGetElapsedTimef()*2), 0, 200*sin(ofGetElapsedTimef()*2));
+
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    camera.begin(); //カメラ開始
+    
     ofSetColor(255); //塗りの色を設定
     
     ofEnableBlendMode(OF_BLENDMODE_ALPHA); //ブレンドモードの定義
     
     ofEnableDepthTest(); //深度テストを有効にする関数
+    
+    
+    //mdoelの顔部分
 #ifndef TARGET_PROGRAMMABLE_GL
     glShadeModel(GL_SMOOTH); //some model / light stuff
 #endif
@@ -47,16 +67,17 @@ void ofApp::draw(){
     ofEnableSeparateSpecularLight();
     
     ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
-    ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
-    ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-    ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
-    model.drawFaces(); //modelの描画実行
+        ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
+        ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
+        ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
+        model.drawFaces(); //modelの顔を描画
     ofPopMatrix();
     
+    //model全体
 #ifndef TARGET_PROGRAMMABLE_GL
     glEnable(GL_NORMALIZE);
 #endif
-    //歩く処理
+    //
     ofPushMatrix();
         ofTranslate(model.getPosition().x-300, model.getPosition().y, 0);
         ofRotate(-mouseX, 0, 1, 0);
@@ -87,11 +108,14 @@ void ofApp::draw(){
     //塗り色を黒に
     ofSetColor(255, 255, 255 );
     
+    camera.end(); //カメラ終了
+    
     //ログの表示
     ofDrawBitmapString("fps: "+ofToString(ofGetFrameRate(), 2), 10, 15);
     ofDrawBitmapString("keys 1-5 load models, spacebar to trigger animation", 10, 30);
     ofDrawBitmapString("drag to control animation with mouseY", 10, 45);
     ofDrawBitmapString("num animations for this model: " + ofToString(model.getAnimationCount()), 10, 60);
+
 }
 
 //--------------------------------------------------------------
@@ -131,6 +155,16 @@ void ofApp::keyPressed(int key){
         case 's':
             ofBackground(50, 0);
             break;
+        case 'p':
+            ofPushMatrix();
+            ofTranslate(model.getPosition().x+500, model.getPosition().y, 0);
+            model.drawFaces();
+            ofPopMatrix();
+            break;
+//        case 'c':
+//            //  何かキーを押したらスタート
+//            isStart = true;
+//            break;
         case ' ':
             bAnimate = !bAnimate;
             break;
@@ -153,9 +187,6 @@ void ofApp::keyReleased(int key){
         case 'a':
             ofBackground(50, 0);
             break;
-            //        case 's':
-            //            ofBackground(50, 0);
-            //            break;
         default:
             break;
     }

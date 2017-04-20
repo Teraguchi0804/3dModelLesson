@@ -32,6 +32,7 @@ public:
     
     ofMesh mesh;
     ofLight	light;
+    ofCamera camera;
 };
 
 #endif
