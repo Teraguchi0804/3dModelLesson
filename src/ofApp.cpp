@@ -42,7 +42,6 @@ void ofApp::update(){
     
     mesh = model.getCurrentAnimatedMesh(0);
     
-    
     camera.lookAt(ofVec3f(model.getPosition().x,model.getPosition().y,model.getPosition().z));
     camera.setPosition(200*cos(ofGetElapsedTimef()*2), 0, 200*sin(ofGetElapsedTimef()*2));
 
