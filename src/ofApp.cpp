@@ -18,7 +18,9 @@ void ofApp::setup(){
     
     gui.add(camPosX.setup("camPosX", 0, 0, 3000));
     gui.add(camPosY.setup("camPosY", 375, 0, 3000));
-    gui.add(camPosZ.setup("camPosZ", 1000, 0, 3000));
+    gui.add(camPosZ.setup("camPosZ", 600, 0, 3000));
+    
+    
     
     
     
@@ -49,8 +51,9 @@ void ofApp::update(){
     
     mesh = model.getCurrentAnimatedMesh(0);
     
-    
+//    camera.setPosition(100, 100, 100);
     camera.setPosition(camPosX, camPosY, camPosZ);
+    
     camera.lookAt(ofVec3f(model.getPosition().x, model.getPosition().y, model.getPosition().z));
 //    camera.setPosition(200*cos(ofGetElapsedTimef()*2), 0, 200*sin(ofGetElapsedTimef()*2));
 
@@ -60,7 +63,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     camera.begin(); //カメラ開始
-        ofTranslate(ofGetWidth()/2, ofGetHeight()/2); //右手座標系に変換
+        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
         ofScale(-1, 1, 1); //右手座標系へ変換
     
         ofSetColor(255); //塗りの色を設定
