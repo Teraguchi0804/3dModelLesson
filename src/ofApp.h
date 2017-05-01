@@ -2,6 +2,7 @@
 #define _TEST_APP
 
 #include "ofMain.h"
+#include "ofxGui.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofVboMesh.h"
 
@@ -33,6 +34,15 @@ public:
     ofMesh mesh;
     ofLight	light;
     ofCamera camera;
+    ofxPanel gui;
+    
+    ofxFloatSlider objPosX;
+    ofxFloatSlider objPosY;
+    ofxFloatSlider objPosZ;
+    
+    ofxFloatSlider camPosX;
+    ofxFloatSlider camPosY;
+    ofxFloatSlider camPosZ;
 };
 
 #endif
