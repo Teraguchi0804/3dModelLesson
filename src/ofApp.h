@@ -43,6 +43,8 @@ public:
     ofxFloatSlider camPosX;
     ofxFloatSlider camPosY;
     ofxFloatSlider camPosZ;
+    
+    ofxFloatSlider modelY;
 };
 
 #endif

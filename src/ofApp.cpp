@@ -16,10 +16,12 @@ void ofApp::setup(){
 //    gui.add(objPosY.setup("objPosY", 0, 0, 3000));
 //    gui.add(objPosX.setup("objPosX", 0, 0, 3000));
 //    
-    gui.add(camPosX.setup("camPosX", 100, 0, 3000));
-    gui.add(camPosY.setup("camPosY", 100, 0, 3000));
-    gui.add(camPosZ.setup("camPosZ", 100, 0, 3000));
+    gui.add(camPosX.setup("camPosX", 0, 0, 3000));
+    gui.add(camPosY.setup("camPosY", 375, 0, 3000));
+    gui.add(camPosZ.setup("camPosZ", 0, 0, 3000));
     
+    
+    gui.add(modelY.setup("modelY", -540, -3000, 3000));
     
     
     
@@ -30,7 +32,8 @@ void ofApp::setup(){
     
 //    model.setScale(0.5, 0.5, 0.5);
     model.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
-    model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
+//    model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
+    model.setPosition(ofGetWidth()/2, ofGetHeight()/2, 0);
 //    model.setPosition(objPosX, objPosY, objPosZ);
     model.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
     model.playAllAnimations(); //modelのアニメーション開始
@@ -43,6 +46,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
     model.update(); //modelをアップデート
     
     if(bAnimateMouse) {
@@ -51,28 +55,35 @@ void ofApp::update(){
     
     mesh = model.getCurrentAnimatedMesh(0);
     
-//    camera.setPosition((ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0);
-//    camera.setPosition(camPosX, camPosY, camPosZ);
+    model.setPosition(ofGetWidth()/2, ofGetHeight()/2+modelY, 0);
+    
+//    camera.setPosition((ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0));
+    camera.setPosition(camPosX, camPosY, camPosZ);
     
 //    camera.setPosition(100, 100, 100);
     
 //    camera.lookAt(ofVec3f(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0));
-//    camera.setPosition(200*cos(ofGetElapsedTimef()*2), 0, 200*sin(ofGetElapsedTimef()*2));
+    camera.lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, 0));
+    
+    
+//    camera.setPosition(200*cos(ofGetElapsedTimef()*2), 0, 200*sin(ofGetElapsedTimef()*2)); //タイムを取得して更新
 
     
 }
 
+
 //--------------------------------------------------------------
 void ofApp::draw(){
-    camera.begin(); //カメラ開始
-//        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
-//        ofScale(1, -1, 1); //右手座標系へ変換
+    
     
         ofSetColor(255); //塗りの色を設定
     
         ofEnableBlendMode(OF_BLENDMODE_ALPHA); //ブレンドモードの定義
     
         ofEnableDepthTest(); //深度テストを有効にする関数
+
+
+    camera.begin(); //カメラ開始
     
     
         //mdoelの顔部分
@@ -83,51 +94,74 @@ void ofApp::draw(){
         ofEnableSeparateSpecularLight();
     
         ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
+    
+//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+    
+            ofScale(1, -1); //右手座標系へ変換
             ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
+//                ofTranslate(model.getPosition().x, model.getPosition().y, 0);
             ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
             ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
+    
             model.drawFaces(); //modelの顔を描画
+    
         ofPopMatrix();
+    
+    
+    
+//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
+//            ofScale(1, -1, 1); //右手座標系へ変換
     
         //model全体
-    #ifndef TARGET_PROGRAMMABLE_GL
-        glEnable(GL_NORMALIZE);
-    #endif
-        //
-        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
-            ofTranslate(model.getPosition().x, model.getPosition().y, 0);
-            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
+//    #ifndef TARGET_PROGRAMMABLE_GL
+//        glEnable(GL_NORMALIZE);
+//    #endif
+//        //
+//        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
+//            ofTranslate(model.getPosition().x, model.getPosition().y, 0);
+//            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
+//            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
+//    
+//            ofxAssimpMeshHelper & meshHelper = model.getMeshHelper(1);
+//    
+//            ofMultMatrix(model.getModelMatrix());
+//            ofMultMatrix(meshHelper.matrix);
+//    
+////            model.setPosition(objPosX, objPosY, objPosZ);
+//            model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0);
+//    
+//            ofMaterial & material = meshHelper.material;
+//            if(meshHelper.hasTexture()){
+//                meshHelper.getTextureRef().bind();
+//            }
+//            material.begin();
+//    
+//    
+//    
+//            mesh.drawWireframe();
+//    
+//    
+//            material.end();
+//            if(meshHelper.hasTexture()){
+//                meshHelper.getTextureRef().unbind();
+//            }
+//        ofPopMatrix();
     
-            ofxAssimpMeshHelper & meshHelper = model.getMeshHelper(0);
+
     
-            ofMultMatrix(model.getModelMatrix());
-            ofMultMatrix(meshHelper.matrix);
     
-//            model.setPosition(objPosX, objPosY, objPosZ);
-            model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0);
     
-            ofMaterial & material = meshHelper.material;
-            if(meshHelper.hasTexture()){
-                meshHelper.getTextureRef().bind();
-            }
-            material.begin();
-            mesh.drawWireframe();
-            material.end();
-            if(meshHelper.hasTexture()){
-                meshHelper.getTextureRef().unbind();
-            }
-        ofPopMatrix();
-    
-        ofDisableDepthTest(); //深度テストを無効に
-        light.disable(); //ライティングを無効に
+        ofDisableDepthTest(); // 深度テストを無効に
+        light.disable(); // ライティングを無効に
         ofDisableLighting();
         ofDisableSeparateSpecularLight();
     
         //塗り色を黒に
         ofSetColor(255, 255, 255 );
     
+
     camera.end(); //カメラ終了
+    
     
     //ログの表示
     ofDrawBitmapString("fps: "+ofToString(ofGetFrameRate(), 2), 10, 15);
