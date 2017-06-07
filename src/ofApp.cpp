@@ -12,13 +12,13 @@ void ofApp::setup(){
     ofEnableSmoothing();
     
     gui.setup();
-    gui.add(objPosZ.setup("objPosZ", 0, 0, 3000));
-    gui.add(objPosY.setup("objPosY", 0, 0, 3000));
-    gui.add(objPosX.setup("objPosX", 0, 0, 3000));
-    
-    gui.add(camPosX.setup("camPosX", 0, 0, 3000));
-    gui.add(camPosY.setup("camPosY", 375, 0, 3000));
-    gui.add(camPosZ.setup("camPosZ", 600, 0, 3000));
+//    gui.add(objPosZ.setup("objPosZ", 0, 0, 3000));
+//    gui.add(objPosY.setup("objPosY", 0, 0, 3000));
+//    gui.add(objPosX.setup("objPosX", 0, 0, 3000));
+//    
+    gui.add(camPosX.setup("camPosX", 100, 0, 3000));
+    gui.add(camPosY.setup("camPosY", 100, 0, 3000));
+    gui.add(camPosZ.setup("camPosZ", 100, 0, 3000));
     
     
     
@@ -28,9 +28,9 @@ void ofApp::setup(){
     bAnimateMouse = false;
     animationPosition = 0;
     
-    model.setScale(0.5, 0.5, 0.5);
+//    model.setScale(0.5, 0.5, 0.5);
     model.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
-//    model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
+    model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
 //    model.setPosition(objPosX, objPosY, objPosZ);
     model.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
     model.playAllAnimations(); //modelのアニメーション開始
@@ -51,10 +51,12 @@ void ofApp::update(){
     
     mesh = model.getCurrentAnimatedMesh(0);
     
-//    camera.setPosition(100, 100, 100);
-    camera.setPosition(camPosX, camPosY, camPosZ);
+//    camera.setPosition((ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0);
+//    camera.setPosition(camPosX, camPosY, camPosZ);
     
-    camera.lookAt(ofVec3f(model.getPosition().x, model.getPosition().y, model.getPosition().z));
+//    camera.setPosition(100, 100, 100);
+    
+//    camera.lookAt(ofVec3f(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0));
 //    camera.setPosition(200*cos(ofGetElapsedTimef()*2), 0, 200*sin(ofGetElapsedTimef()*2));
 
     
@@ -63,8 +65,8 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     camera.begin(); //カメラ開始
-        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
-        ofScale(-1, 1, 1); //右手座標系へ変換
+//        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
+//        ofScale(1, -1, 1); //右手座標系へ変換
     
         ofSetColor(255); //塗りの色を設定
     
@@ -102,8 +104,8 @@ void ofApp::draw(){
             ofMultMatrix(model.getModelMatrix());
             ofMultMatrix(meshHelper.matrix);
     
-            model.setPosition(objPosX, objPosY, objPosZ);
-
+//            model.setPosition(objPosX, objPosY, objPosZ);
+            model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0);
     
             ofMaterial & material = meshHelper.material;
             if(meshHelper.hasTexture()){
