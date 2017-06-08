@@ -31,7 +31,9 @@ void ofApp::setup(){
     animationPosition = 0;
     
 //    model.setScale(0.5, 0.5, 0.5);
-    model.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
+//    model.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
+    model.loadModel("charactor.mtl", false);
+    
 //    model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
     model.setPosition(ofGetWidth()/2, ofGetHeight()/2, 0);
 //    model.setPosition(objPosX, objPosY, objPosZ);
@@ -39,8 +41,14 @@ void ofApp::setup(){
     model.playAllAnimations(); //modelのアニメーション開始
     if(!bAnimate) {
         model.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
+        model_stage.setPausedForAllAnimations(true);
     }
     
+    
+    model_stage.loadModel("stage.obj", false);
+    model_stage.setPosition(ofGetWidth()/2, ofGetHeight()/2, 0);
+    model_stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+    model_stage.playAllAnimations();
     
 }
 
@@ -48,12 +56,14 @@ void ofApp::setup(){
 void ofApp::update(){
     
     model.update(); //modelをアップデート
+    model_stage.update();
     
     if(bAnimateMouse) {
         model.setPositionForAllAnimations(animationPosition);
     }
     
     mesh = model.getCurrentAnimatedMesh(0);
+//    mesh_stage = model_stage.getCurrentAnimatedMesh(0);
     
     model.setPosition(ofGetWidth()/2, ofGetHeight()/2+modelY, 0);
     
@@ -111,46 +121,7 @@ void ofApp::draw(){
     
 //            ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
 //            ofScale(1, -1, 1); //右手座標系へ変換
-    
-        //model全体
-//    #ifndef TARGET_PROGRAMMABLE_GL
-//        glEnable(GL_NORMALIZE);
-//    #endif
-//        //
-//        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
-//            ofTranslate(model.getPosition().x, model.getPosition().y, 0);
-//            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-//            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
-//    
-//            ofxAssimpMeshHelper & meshHelper = model.getMeshHelper(1);
-//    
-//            ofMultMatrix(model.getModelMatrix());
-//            ofMultMatrix(meshHelper.matrix);
-//    
-////            model.setPosition(objPosX, objPosY, objPosZ);
-//            model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0);
-//    
-//            ofMaterial & material = meshHelper.material;
-//            if(meshHelper.hasTexture()){
-//                meshHelper.getTextureRef().bind();
-//            }
-//            material.begin();
-//    
-//    
-//    
-//            mesh.drawWireframe();
-//    
-//    
-//            material.end();
-//            if(meshHelper.hasTexture()){
-//                meshHelper.getTextureRef().unbind();
-//            }
-//        ofPopMatrix();
-    
 
-    
-    
-    
         ofDisableDepthTest(); // 深度テストを無効に
         light.disable(); // ライティングを無効に
         ofDisableLighting();
@@ -228,12 +199,15 @@ void ofApp::keyPressed(int key){
     }
     
     mesh = model.getMesh(0);
-    
     model.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
     model.playAllAnimations();
     if(!bAnimate) {
         model.setPausedForAllAnimations(true);
     }
+    
+//    mesh_stage = model_stage.getMesh(0);
+//    model_stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+//    model_stage.playAllAnimations();
 }
 
 //--------------------------------------------------------------
