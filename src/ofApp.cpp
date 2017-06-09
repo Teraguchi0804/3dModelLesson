@@ -3,6 +3,9 @@
 float speed_x;
 float speed_y;
 
+bool isWalkRight;
+bool isWalkLeft;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -14,6 +17,8 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofEnableSmoothing();
     
+    isWalkRight = false;
+    isWalkLeft = true;
     
     pos.x = ofGetWidth()/2;
     pos.y = ofGetHeight()/2;
@@ -21,10 +26,7 @@ void ofApp::setup(){
     
     
     gui.setup();
-//    gui.add(objPosZ.setup("objPosZ", 0, 0, 3000));
-//    gui.add(objPosY.setup("objPosY", 0, 0, 3000));
-//    gui.add(objPosX.setup("objPosX", 0, 0, 3000));
-//    
+
     gui.add(camPosX.setup("camPosX", 0, 0, 3000));
     gui.add(camPosY.setup("camPosY", 375, 0, 3000));
     gui.add(camPosZ.setup("camPosZ", 0, 0, 3000));
@@ -40,31 +42,19 @@ void ofApp::setup(){
     bAnimateMouse = false;
     animationPosition = 0;
     
-//    model.setScale(0.5, 0.5, 0.5);
-//    model.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
-//    model.loadModel("charactor.obj", false);
-    
-//    model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
+    charactor.setScale(0.5, 0.5, 0.5);
+//    charactor.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
+    charactor.loadModel("charactor.obj", false);
     
     
-   
+    charactor.setPosition(pos.x, pos.y, 0);
     
-//    model.setPosition(pos.x, pos.y, 0);
-////    model.setPosition(objPosX, objPosY, objPosZ);
-//    model.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
-//    model.playAllAnimations(); //modelのアニメーション開始
+//    charactor.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
+//    charactor.playAllAnimations(); //modelのアニメーション開始
 //    if(!bAnimate) {
-//        model.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
-//        model_stage.setPausedForAllAnimations(true);
+//        charactor.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
 //    }
-//    
-    
-    
-    
-//    model_stage.loadModel("stage.obj", false);
-//    model_stage.setPosition(ofGetWidth()/2, ofGetHeight()/2, 0);
-//    model_stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-//    model_stage.playAllAnimations();
+//
     
 }
 
@@ -84,30 +74,16 @@ void ofApp::update(){
     }
     
     
-//    model.update(); //modelをアップデート
-//    model_stage.update();
+    charactor.update(); //modelをアップデート
     
 //    if(bAnimateMouse) {
-//        model.setPositionForAllAnimations(animationPosition);
+//        charactor.setPositionForAllAnimations(animationPosition);
 //    }
 //    
-//    mesh = model.getCurrentAnimatedMesh(0);
+    mesh = charactor.getCurrentAnimatedMesh(0);
 
     
-    
-//    if(pos.x == ofGetWidth()/2){
-//        pos.x += 2.0;
-//    }
-//    
-//    if(pos.x > ofGetWidth()){
-//        pos.x = 0;
-//    }
-//    if(pos.x < 0){
-//        pos.x = ofGetWidth();
-//    }
-    
-    
-//    model.setPosition(pos.x, pos.y+modelY, 0);
+//    charactor.setPosition(pos.x, pos.y+modelY, 0);
     
     
 //    camera.setPosition(100, 100, 100);
@@ -132,37 +108,37 @@ void ofApp::draw(){
     
         ofEnableDepthTest(); //深度テストを有効にする関数
     
-//    model.setPosition(pos.x+modelX, pos.y+modelY, pos.z);
+    charactor.setPosition(pos.z+modelX, pos.y+modelY, pos.x);
     
-ofDrawCircle(pos.x, pos.y, 40);
+//    ofDrawCircle(pos.x, pos.y, 40);
     camera.begin(); //カメラ開始
     
     
         //mdoelの顔部分
-//    #ifndef TARGET_PROGRAMMABLE_GL
-//        glShadeModel(GL_SMOOTH); //some model / light stuff
-//    #endif
-//        light.enable(); //ライティングを有効に
-//        ofEnableSeparateSpecularLight();
-//    
-//        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
-//    
-////            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-//    
-//            ofScale(1, -1); //右手座標系へ変換
-////            ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
-//                ofTranslate(model.getPosition().x, model.getPosition().y, 0);
-////            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-////            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
-//    
-//            model.drawFaces(); //modelの顔を描画
-//    
-//        ofPopMatrix();
+    #ifndef TARGET_PROGRAMMABLE_GL
+        glShadeModel(GL_SMOOTH); //some model / light stuff
+    #endif
+        light.enable(); //ライティングを有効に
+        ofEnableSeparateSpecularLight();
+    
+        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
+    
+//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+    
+            ofScale(1, -1); //右手座標系へ変換
+//            ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
+                ofTranslate(charactor.getPosition().x, charactor.getPosition().y, 0);
+//            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
+//            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
+    
+            charactor.drawFaces(); //modelの顔を描画
+    
+        ofPopMatrix();
     
     
     
-//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
-//            ofScale(1, -1, 1); //右手座標系へ変換
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
+            ofScale(1, -1, 1); //右手座標系へ変換
 
         ofDisableDepthTest(); // 深度テストを無効に
         light.disable(); // ライティングを無効に
@@ -180,7 +156,7 @@ ofDrawCircle(pos.x, pos.y, 40);
     ofDrawBitmapString("fps: "+ofToString(ofGetFrameRate(), 2), 10, 15);
     ofDrawBitmapString("keys 1-5 load models, spacebar to trigger animation", 10, 30);
     ofDrawBitmapString("drag to control animation with mouseY", 10, 45);
-    ofDrawBitmapString("num animations for this model: " + ofToString(model.getAnimationCount()), 10, 60);
+    ofDrawBitmapString("num animations for this model: " + ofToString(charactor.getAnimationCount()), 10, 60);
     ofDrawBitmapString("pos.x: "+ofToString(pos.x), 10, 75);
     ofDrawBitmapString("pos.y: "+ofToString(pos.y), 10, 90);
     
@@ -193,30 +169,30 @@ void ofApp::keyPressed(int key){
     ofPoint modelPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75);
     switch (key) { //キーにより読み込むmodelをスイッチ
         case '1':
-            model.loadModel("astroBoy_walk.dae");
-            model.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
+            charactor.loadModel("astroBoy_walk.dae");
+            charactor.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
             ofEnableSeparateSpecularLight();
             break;
         case '2':
-            model.loadModel("TurbochiFromXSI.dae");
-            model.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
-            model.setRotation(0, -180, 1, 0, 0);
+            charactor.loadModel("TurbochiFromXSI.dae");
+            charactor.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
+            charactor.setRotation(0, -180, 1, 0, 0);
             ofEnableSeparateSpecularLight();
             break;
         case '3':
-            model.loadModel("dwarf.x");
-            model.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
+            charactor.loadModel("dwarf.x");
+            charactor.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
             ofDisableSeparateSpecularLight();
             break;
         case '4':
-            model.loadModel("monster-animated-character-X.X");
-            model.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
-            model.setRotation(0, -90, 0, 0, 1);
+            charactor.loadModel("monster-animated-character-X.X");
+            charactor.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
+            charactor.setRotation(0, -90, 0, 0, 1);
             ofDisableSeparateSpecularLight();
             break;
         case '5':
-            model.loadModel("squirrel/NewSquirrel.3ds");
-            model.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
+            charactor.loadModel("squirrel/NewSquirrel.3ds");
+            charactor.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
             ofDisableSeparateSpecularLight();
             break;
         case 'a':
@@ -227,8 +203,8 @@ void ofApp::keyPressed(int key){
             break;
         case 'p':
             ofPushMatrix();
-            ofTranslate(model.getPosition().x+500, model.getPosition().y, 0);
-            model.drawFaces();
+            ofTranslate(charactor.getPosition().x+500, charactor.getPosition().y, 0);
+            charactor.drawFaces();
             ofPopMatrix();
             break;
 //        case 'c':
@@ -242,11 +218,11 @@ void ofApp::keyPressed(int key){
             break;
     }
     
-    mesh = model.getMesh(0);
-    model.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-    model.playAllAnimations();
+    mesh = charactor.getMesh(0);
+    charactor.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+    charactor.playAllAnimations();
     if(!bAnimate) {
-        model.setPausedForAllAnimations(true);
+        charactor.setPausedForAllAnimations(true);
     }
     
 //    mesh_stage = model_stage.getMesh(0);
@@ -279,7 +255,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     // pause all animations, so we can scrub through them manually.
-    model.setPausedForAllAnimations(true);
+    charactor.setPausedForAllAnimations(true);
     animationPosition = y / (float)ofGetHeight();
     bAnimateMouse = true;
 }
@@ -288,7 +264,7 @@ void ofApp::mousePressed(int x, int y, int button){
 void ofApp::mouseReleased(int x, int y, int button){
     // unpause animations when finished scrubbing.
     if(bAnimate) {
-        model.setPausedForAllAnimations(false);
+        charactor.setPausedForAllAnimations(false);
     }
     bAnimateMouse = false;
 }

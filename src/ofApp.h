@@ -27,8 +27,8 @@ public:
     
     ofVec3f pos;
     
-    ofxAssimpModelLoader model; //Addonの初期化
-    ofxAssimpModelLoader model_stage; //Addonの初期化
+    ofxAssimpModelLoader charactor; //Addonの初期化
+    ofxAssimpModelLoader stage; //Addonの初期化
     
     bool bAnimate;
     bool bAnimateMouse;
