@@ -1,5 +1,8 @@
 #include "ofApp.h"
 
+float speed_x;
+float speed_y;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -11,6 +14,12 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofEnableSmoothing();
     
+    
+    pos.x = ofGetWidth()/2;
+    pos.y = ofGetHeight()/2;
+    speed_x = 4;
+    
+    
     gui.setup();
 //    gui.add(objPosZ.setup("objPosZ", 0, 0, 3000));
 //    gui.add(objPosY.setup("objPosY", 0, 0, 3000));
@@ -20,8 +29,9 @@ void ofApp::setup(){
     gui.add(camPosY.setup("camPosY", 375, 0, 3000));
     gui.add(camPosZ.setup("camPosZ", 0, 0, 3000));
     
-    
-    gui.add(modelY.setup("modelY", -540, -3000, 3000));
+    gui.add(modelX.setup("modelX", 750, -3000, 3000));
+    gui.add(modelY.setup("modelY", -480, -3000, 3000));
+//    gui.add(modelZ.setup("modelZ", 0, -3000, 3000));
     
     
     
@@ -32,47 +42,77 @@ void ofApp::setup(){
     
 //    model.setScale(0.5, 0.5, 0.5);
 //    model.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
-    model.loadModel("charactor.mtl", false);
+//    model.loadModel("charactor.obj", false);
     
 //    model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0); //modelのポジション設定:(float x, float y, float z)
-    model.setPosition(ofGetWidth()/2, ofGetHeight()/2, 0);
-//    model.setPosition(objPosX, objPosY, objPosZ);
-    model.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
-    model.playAllAnimations(); //modelのアニメーション開始
-    if(!bAnimate) {
-        model.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
-        model_stage.setPausedForAllAnimations(true);
-    }
     
     
-    model_stage.loadModel("stage.obj", false);
-    model_stage.setPosition(ofGetWidth()/2, ofGetHeight()/2, 0);
-    model_stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-    model_stage.playAllAnimations();
+   
+    
+//    model.setPosition(pos.x, pos.y, 0);
+////    model.setPosition(objPosX, objPosY, objPosZ);
+//    model.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
+//    model.playAllAnimations(); //modelのアニメーション開始
+//    if(!bAnimate) {
+//        model.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
+//        model_stage.setPausedForAllAnimations(true);
+//    }
+//    
+    
+    
+    
+//    model_stage.loadModel("stage.obj", false);
+//    model_stage.setPosition(ofGetWidth()/2, ofGetHeight()/2, 0);
+//    model_stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+//    model_stage.playAllAnimations();
     
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    model.update(); //modelをアップデート
-    model_stage.update();
+    pos.x = pos.x + speed_x;
     
-    if(bAnimateMouse) {
-        model.setPositionForAllAnimations(animationPosition);
+    //左端で跳ね返る
+    if(pos.x < 0){
+        speed_x = speed_x * -1;
     }
     
-    mesh = model.getCurrentAnimatedMesh(0);
-//    mesh_stage = model_stage.getCurrentAnimatedMesh(0);
+    //右端で跳ね返る
+    if(pos.x > ofGetWidth()){
+        speed_x = speed_x * -1;
+    }
     
-    model.setPosition(ofGetWidth()/2, ofGetHeight()/2+modelY, 0);
     
-//    camera.setPosition((ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0));
-    camera.setPosition(camPosX, camPosY, camPosZ);
+//    model.update(); //modelをアップデート
+//    model_stage.update();
+    
+//    if(bAnimateMouse) {
+//        model.setPositionForAllAnimations(animationPosition);
+//    }
+//    
+//    mesh = model.getCurrentAnimatedMesh(0);
+
+    
+    
+//    if(pos.x == ofGetWidth()/2){
+//        pos.x += 2.0;
+//    }
+//    
+//    if(pos.x > ofGetWidth()){
+//        pos.x = 0;
+//    }
+//    if(pos.x < 0){
+//        pos.x = ofGetWidth();
+//    }
+    
+    
+//    model.setPosition(pos.x, pos.y+modelY, 0);
+    
     
 //    camera.setPosition(100, 100, 100);
-    
 //    camera.lookAt(ofVec3f(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0));
+    camera.setPosition(camPosX, camPosY, camPosZ);
     camera.lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, 0));
     
     
@@ -91,31 +131,33 @@ void ofApp::draw(){
         ofEnableBlendMode(OF_BLENDMODE_ALPHA); //ブレンドモードの定義
     
         ofEnableDepthTest(); //深度テストを有効にする関数
-
-
+    
+//    model.setPosition(pos.x+modelX, pos.y+modelY, pos.z);
+    
+ofDrawCircle(pos.x, pos.y, 40);
     camera.begin(); //カメラ開始
     
     
         //mdoelの顔部分
-    #ifndef TARGET_PROGRAMMABLE_GL
-        glShadeModel(GL_SMOOTH); //some model / light stuff
-    #endif
-        light.enable(); //ライティングを有効に
-        ofEnableSeparateSpecularLight();
-    
-        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
-    
-//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    
-            ofScale(1, -1); //右手座標系へ変換
-            ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
+//    #ifndef TARGET_PROGRAMMABLE_GL
+//        glShadeModel(GL_SMOOTH); //some model / light stuff
+//    #endif
+//        light.enable(); //ライティングを有効に
+//        ofEnableSeparateSpecularLight();
+//    
+//        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
+//    
+////            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+//    
+//            ofScale(1, -1); //右手座標系へ変換
+////            ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
 //                ofTranslate(model.getPosition().x, model.getPosition().y, 0);
-            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
-    
-            model.drawFaces(); //modelの顔を描画
-    
-        ofPopMatrix();
+////            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
+////            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
+//    
+//            model.drawFaces(); //modelの顔を描画
+//    
+//        ofPopMatrix();
     
     
     
@@ -139,6 +181,8 @@ void ofApp::draw(){
     ofDrawBitmapString("keys 1-5 load models, spacebar to trigger animation", 10, 30);
     ofDrawBitmapString("drag to control animation with mouseY", 10, 45);
     ofDrawBitmapString("num animations for this model: " + ofToString(model.getAnimationCount()), 10, 60);
+    ofDrawBitmapString("pos.x: "+ofToString(pos.x), 10, 75);
+    ofDrawBitmapString("pos.y: "+ofToString(pos.y), 10, 90);
     
     gui.draw(); //GUIを描画
 

@@ -25,6 +25,8 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
+    ofVec3f pos;
+    
     ofxAssimpModelLoader model; //Addonの初期化
     ofxAssimpModelLoader model_stage; //Addonの初期化
     
@@ -45,7 +47,9 @@ public:
     ofxFloatSlider camPosY;
     ofxFloatSlider camPosZ;
     
+    ofxFloatSlider modelX;
     ofxFloatSlider modelY;
+//    ofxFloatSlider modelZ;
 };
 
 #endif
