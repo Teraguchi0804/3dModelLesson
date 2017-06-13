@@ -110,6 +110,8 @@ void ofApp::draw(){
     
     charactor.setPosition(pos.z+modelX, pos.y+modelY, pos.x);
     
+//    camera.setVFlip(true);
+    
 //    ofDrawCircle(pos.x, pos.y, 40);
     camera.begin(); //カメラ開始
     
