@@ -3,9 +3,6 @@
 float speed_x;
 float speed_y;
 
-bool isWalkRight;
-bool isWalkLeft;
-
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -20,11 +17,6 @@ void ofApp::setup(){
     light.enable(); //ライティングを有効に
     ofEnableSeparateSpecularLight();
     
-    light.setPosition(-100, 100, 100);
-    
-    isWalkRight = false;
-    isWalkLeft = true;
-    
 //    pos.x = ofGetWidth()/2;
 //    pos.y = ofGetHeight()/2;
     
@@ -35,13 +27,13 @@ void ofApp::setup(){
     
     gui.setup();
 
-    gui.add(camPosX.setup("camPosX", -1830, -3000, 3000));
-    gui.add(camPosY.setup("camPosY", 1290, -3000, 3000));
-    gui.add(camPosZ.setup("camPosZ", 1140, -3000, 3000));
+    gui.add(camPosX.setup("camPosX", -2010, -3000, 3000));
+    gui.add(camPosY.setup("camPosY", 2070, -3000, 3000));
+    gui.add(camPosZ.setup("camPosZ", 1920, -3000, 3000));
     
     gui.add(lightPosX.setup("lightPosX", -1560, -3000, 3000));
     gui.add(lightPosY.setup("lightPosY", 1830, -3000, 3000));
-    gui.add(lightPosZ.setup("lightPosZ", 30, -3000, 3000));
+    gui.add(lightPosZ.setup("lightPosZ", 1320, -3000, 3000));
     
 //    gui.add(modelX.setup("modelX", 0, -3000, 3000));
 //    gui.add(modelY.setup("modelY", 0, -3000, 3000));
@@ -52,8 +44,6 @@ void ofApp::setup(){
 //    gui.add(rotZ.setup("rotZ", 0, 0, 360));
     
     
-    
-    
     bAnimate = false;
     bAnimateMouse = false;
     animationPosition = 0;
@@ -61,17 +51,24 @@ void ofApp::setup(){
     charactor.setScale(1, 1, 1);
     charactor.loadModel("charactor.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
     charactor.setPosition(pos.x, pos.y, 0);
+    charactor.setRotation(0, -90, 0, 1, 0);
     
     
     charactor.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
     charactor.playAllAnimations(); //modelのアニメーション開始
-    if(!bAnimate) {
-        charactor.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
-    }
-
+    
     stage.setScale(1, 1, 1);
     stage.loadModel("stage.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
     stage.setPosition(pos.x, pos.y, 0);
+    stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+    stage.playAllAnimations();
+    
+    if(!bAnimate) {
+        charactor.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
+        stage.setPausedForAllAnimations(true);
+    }
+
+    
     
 }
 
@@ -79,7 +76,7 @@ void ofApp::setup(){
 void ofApp::update(){
     
     pos.x = pos.x + speed_x;
-    charactor.setRotation(0, -90, 0, 1, 0);
+//    charactor.setRotation(0, -90, 0, 1, 0);
     
     //左端で跳ね返る
     if(pos.x < 0){
@@ -95,7 +92,6 @@ void ofApp::update(){
     
     
     charactor.update(); //modelをアップデート
-    
     stage.update();
     
     if(bAnimateMouse) {
@@ -103,11 +99,12 @@ void ofApp::update(){
     }
 
     mesh = charactor.getCurrentAnimatedMesh(0);
+    mesh = stage.getCurrentAnimatedMesh(0);
 
     
     light.setPosition(lightPosX, lightPosY, lightPosZ);
     
-    camera.setFov(35);
+    camera.setFov(30);
     camera.setPosition(camPosX, camPosY, camPosZ);
     camera.lookAt(ofVec3f(0, 0, 0));
     
@@ -150,20 +147,14 @@ void ofApp::draw(){
         ofEnableSeparateSpecularLight();
         ofPushMatrix();
     
-//            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    
             ofScale(1, -1); //右手座標系へ変換
 //            ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
 //            ofTranslate(charactor.getPosition().x, charactor.getPosition().y, 0);
 //            ofRotateY(45);
 //            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-//              ofRotate(45, 0, 1, 0); //マウスのX座標移動により回転
 //            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
     
-            charactor.drawFaces(); //modelの顔を描画
-    
-    
-    
+            charactor.drawFaces(); //model描画実行
     
         ofPopMatrix();
     
@@ -203,6 +194,7 @@ void ofApp::keyPressed(int key){
         case '1':
             charactor.loadModel("astroBoy_walk.dae");
             charactor.setPosition(modelPosition.x, modelPosition.y, modelPosition.z);
+            charactor.setRotation(0, -90, 0, 1, 0);
             ofEnableSeparateSpecularLight();
             break;
         case '2':
@@ -228,22 +220,6 @@ void ofApp::keyPressed(int key){
             ofDisableSeparateSpecularLight();
             break;
         case 'a':
-            ofBackground(0, 0);
-            break;
-        case 's':
-            ofBackground(50, 0);
-            break;
-        case 'p':
-            ofPushMatrix();
-            ofTranslate(charactor.getPosition().x+500, charactor.getPosition().y, 0);
-            charactor.drawFaces();
-            ofPopMatrix();
-            break;
-//        case 'c':
-//            //  何かキーを押したらスタート
-//            isStart = true;
-//            break;
-        case ' ':
             bAnimate = !bAnimate;
             break;
         default:
@@ -257,9 +233,13 @@ void ofApp::keyPressed(int key){
         charactor.setPausedForAllAnimations(true);
     }
     
-//    mesh_stage = model_stage.getMesh(0);
-//    model_stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-//    model_stage.playAllAnimations();
+    mesh = stage.getMesh(0);
+    stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+    stage.playAllAnimations();
+    
+    if(!bAnimate) {
+        stage.setPausedForAllAnimations(true);
+    }
 }
 
 //--------------------------------------------------------------
