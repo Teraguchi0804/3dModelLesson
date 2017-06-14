@@ -43,9 +43,13 @@ void ofApp::setup(){
     gui.add(lightPosY.setup("lightPosY", 1830, -3000, 3000));
     gui.add(lightPosZ.setup("lightPosZ", 30, -3000, 3000));
     
-    gui.add(modelX.setup("modelX", 0, -3000, 3000));
-    gui.add(modelY.setup("modelY", 0, -3000, 3000));
-//    gui.add(modelZ.setup("modelZ", 0, -3000, 3000));
+//    gui.add(modelX.setup("modelX", 0, -3000, 3000));
+//    gui.add(modelY.setup("modelY", 0, -3000, 3000));
+    
+//    gui.add(rotAngel.setup("rotAngel", 0, 0, 360));
+//    gui.add(rotX.setup("rotX", 0, 0, 360));
+//    gui.add(rotY.setup("rotY", 0, 0, 360));
+//    gui.add(rotZ.setup("rotZ", 0, 0, 360));
     
     
     
@@ -75,14 +79,17 @@ void ofApp::setup(){
 void ofApp::update(){
     
     pos.x = pos.x + speed_x;
+    charactor.setRotation(0, -90, 0, 1, 0);
     
     //左端で跳ね返る
     if(pos.x < 0){
+        charactor.setRotation(0, -90, 0, 1, 0);
         speed_x = speed_x * -1;
     }
     
     //右端で跳ね返る
     if(pos.x > ofGetWidth()){
+        charactor.setRotation(0, 90, 0, 1, 0);
         speed_x = speed_x * -1;
     }
     
@@ -110,51 +117,53 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    
-        ofSetColor(255); //塗りの色を設定
-    
-        ofEnableBlendMode(OF_BLENDMODE_ALPHA); //ブレンドモードの定義
-    
-        ofEnableDepthTest(); //深度テストを有効にする関数
+
+    ofSetColor(255); //塗りの色を設定
+    ofEnableBlendMode(OF_BLENDMODE_ALPHA); //ブレンドモードの定義
+    ofEnableDepthTest(); //深度テストを有効にする関数
     
     charactor.setPosition(pos.z+modelX, pos.y+modelY, pos.x);
     
 //    camera.setVFlip(true);
     
-//    ofDrawCircle(pos.x, pos.y, 40);
     camera.begin(); //カメラ開始
     
+        //stageModel描画
     #ifndef TARGET_PROGRAMMABLE_GL
         glShadeModel(GL_SMOOTH); //some model / light stuff
     #endif
-        light.enable(); //ライティングを有効に
+        light.enable();
         ofEnableSeparateSpecularLight();
     
-        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
-            ofScale(1, -1); //右手座標系へ変換
-//            ofTranslate(charactor.getPosition().x, charactor.getPosition().y, 0);
-            stage.drawFaces(); //modelの顔を描画
+        ofPushMatrix();
+            ofScale(1, -1);
+            stage.drawFaces();
         ofPopMatrix();
     
     
-        //mdoelの顔部分
+        //charactorModel描画
     #ifndef TARGET_PROGRAMMABLE_GL
         glShadeModel(GL_SMOOTH); //some model / light stuff
-    #endif
-        light.enable(); //ライティングを有効に
-        ofEnableSeparateSpecularLight();
     
-        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
+    #endif
+        light.enable();
+        ofEnableSeparateSpecularLight();
+        ofPushMatrix();
     
 //            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
     
             ofScale(1, -1); //右手座標系へ変換
 //            ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
-                ofTranslate(charactor.getPosition().x, charactor.getPosition().y, 0);
+//            ofTranslate(charactor.getPosition().x, charactor.getPosition().y, 0);
+//            ofRotateY(45);
 //            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
+//              ofRotate(45, 0, 1, 0); //マウスのX座標移動により回転
 //            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
     
             charactor.drawFaces(); //modelの顔を描画
+    
+    
+    
     
         ofPopMatrix();
     
