@@ -17,22 +17,34 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofEnableSmoothing();
     
+    light.enable(); //ライティングを有効に
+    ofEnableSeparateSpecularLight();
+    
+    light.setPosition(-100, 100, 100);
+    
     isWalkRight = false;
     isWalkLeft = true;
     
-    pos.x = ofGetWidth()/2;
-    pos.y = ofGetHeight()/2;
+//    pos.x = ofGetWidth()/2;
+//    pos.y = ofGetHeight()/2;
+    
+    pos.x = 0;
+    pos.y = 0;
     speed_x = 4;
     
     
     gui.setup();
 
-    gui.add(camPosX.setup("camPosX", 0, 0, 3000));
-    gui.add(camPosY.setup("camPosY", 375, 0, 3000));
-    gui.add(camPosZ.setup("camPosZ", 0, 0, 3000));
+    gui.add(camPosX.setup("camPosX", -1830, -3000, 3000));
+    gui.add(camPosY.setup("camPosY", 1290, -3000, 3000));
+    gui.add(camPosZ.setup("camPosZ", 1140, -3000, 3000));
     
-    gui.add(modelX.setup("modelX", 750, -3000, 3000));
-    gui.add(modelY.setup("modelY", -480, -3000, 3000));
+    gui.add(lightPosX.setup("lightPosX", -1560, -3000, 3000));
+    gui.add(lightPosY.setup("lightPosY", 1830, -3000, 3000));
+    gui.add(lightPosZ.setup("lightPosZ", 30, -3000, 3000));
+    
+    gui.add(modelX.setup("modelX", 0, -3000, 3000));
+    gui.add(modelY.setup("modelY", 0, -3000, 3000));
 //    gui.add(modelZ.setup("modelZ", 0, -3000, 3000));
     
     
@@ -42,19 +54,20 @@ void ofApp::setup(){
     bAnimateMouse = false;
     animationPosition = 0;
     
-    charactor.setScale(0.5, 0.5, 0.5);
-//    charactor.loadModel("astroBoy_walk.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
-    charactor.loadModel("charactor.obj", false);
-    
-    
+    charactor.setScale(1, 1, 1);
+    charactor.loadModel("charactor.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
     charactor.setPosition(pos.x, pos.y, 0);
     
-//    charactor.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
-//    charactor.playAllAnimations(); //modelのアニメーション開始
-//    if(!bAnimate) {
-//        charactor.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
-//    }
-//
+    
+    charactor.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
+    charactor.playAllAnimations(); //modelのアニメーション開始
+    if(!bAnimate) {
+        charactor.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
+    }
+
+    stage.setScale(1, 1, 1);
+    stage.loadModel("stage.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
+    stage.setPosition(pos.x, pos.y, 0);
     
 }
 
@@ -76,24 +89,20 @@ void ofApp::update(){
     
     charactor.update(); //modelをアップデート
     
-//    if(bAnimateMouse) {
-//        charactor.setPositionForAllAnimations(animationPosition);
-//    }
-//    
+    stage.update();
+    
+    if(bAnimateMouse) {
+        charactor.setPositionForAllAnimations(animationPosition);
+    }
+
     mesh = charactor.getCurrentAnimatedMesh(0);
 
     
-//    charactor.setPosition(pos.x, pos.y+modelY, 0);
+    light.setPosition(lightPosX, lightPosY, lightPosZ);
     
-    
-//    camera.setPosition(100, 100, 100);
-//    camera.lookAt(ofVec3f(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75 , 0));
+    camera.setFov(35);
     camera.setPosition(camPosX, camPosY, camPosZ);
-    camera.lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, 0));
-    
-    
-//    camera.setPosition(200*cos(ofGetElapsedTimef()*2), 0, 200*sin(ofGetElapsedTimef()*2)); //タイムを取得して更新
-
+    camera.lookAt(ofVec3f(0, 0, 0));
     
 }
 
@@ -114,6 +123,18 @@ void ofApp::draw(){
     
 //    ofDrawCircle(pos.x, pos.y, 40);
     camera.begin(); //カメラ開始
+    
+    #ifndef TARGET_PROGRAMMABLE_GL
+        glShadeModel(GL_SMOOTH); //some model / light stuff
+    #endif
+        light.enable(); //ライティングを有効に
+        ofEnableSeparateSpecularLight();
+    
+        ofPushMatrix(); //ofPushMatrix〜ofPopMatrixで囲まれた範囲内は外部の座標系に影響しない
+            ofScale(1, -1); //右手座標系へ変換
+//            ofTranslate(charactor.getPosition().x, charactor.getPosition().y, 0);
+            stage.drawFaces(); //modelの顔を描画
+        ofPopMatrix();
     
     
         //mdoelの顔部分
@@ -139,8 +160,8 @@ void ofApp::draw(){
     
     
     
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
-            ofScale(1, -1, 1); //右手座標系へ変換
+        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
+        ofScale(1, -1, 1); //右手座標系へ変換
 
         ofDisableDepthTest(); // 深度テストを無効に
         light.disable(); // ライティングを無効に
