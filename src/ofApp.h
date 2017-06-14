@@ -51,11 +51,6 @@ public:
     ofxFloatSlider lightPosY;
     ofxFloatSlider lightPosZ;
     
-    ofxFloatSlider rotAngel;
-    ofxFloatSlider rotX;
-    ofxFloatSlider rotY;
-    ofxFloatSlider rotZ;
-    
     ofxFloatSlider modelX;
     ofxFloatSlider modelY;
 };

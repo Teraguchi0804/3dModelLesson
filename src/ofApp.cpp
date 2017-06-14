@@ -3,6 +3,9 @@
 float speed_x;
 float speed_y;
 
+float width;
+float height;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -24,6 +27,8 @@ void ofApp::setup(){
     pos.y = 0;
     speed_x = 4;
     
+    width = ofGetWidth();
+    height = ofGetHeight();
     
     gui.setup();
 
@@ -38,17 +43,12 @@ void ofApp::setup(){
 //    gui.add(modelX.setup("modelX", 0, -3000, 3000));
 //    gui.add(modelY.setup("modelY", 0, -3000, 3000));
     
-//    gui.add(rotAngel.setup("rotAngel", 0, 0, 360));
-//    gui.add(rotX.setup("rotX", 0, 0, 360));
-//    gui.add(rotY.setup("rotY", 0, 0, 360));
-//    gui.add(rotZ.setup("rotZ", 0, 0, 360));
-    
     
     bAnimate = false;
     bAnimateMouse = false;
     animationPosition = 0;
     
-    charactor.setScale(1, 1, 1);
+    charactor.setScale(0.7, 0.7, 0.7);
     charactor.loadModel("charactor.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
     charactor.setPosition(pos.x, pos.y, 0);
     charactor.setRotation(0, -90, 0, 1, 0);
@@ -104,7 +104,8 @@ void ofApp::update(){
     
     light.setPosition(lightPosX, lightPosY, lightPosZ);
     
-    camera.setFov(30);
+//    camera.setFov(30);
+    camera.setupPerspective(false, 30, 1.0, 10000.0);
     camera.setPosition(camPosX, camPosY, camPosZ);
     camera.lookAt(ofVec3f(0, 0, 0));
     
