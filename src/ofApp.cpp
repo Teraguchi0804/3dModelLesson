@@ -6,10 +6,13 @@ float speed_y;
 float width;
 float height;
 
+bool rightWalk;
+bool leftWalk;
 
+int n = 0;
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetLogLevel(OF_LOG_VERBOSE); //ログレベルを取る(表示する)
+//    ofSetLogLevel(OF_LOG_VERBOSE); //ログレベルを取る(表示する)
     ofBackground(50, 0); //背景色設定：(int r, int g, int b, int a=255)
     
     ofDisableArbTex(); // we need GL_TEXTURE_2D for our models coords. openGLでテクスチャ画像を使用するための準備的なやつ
@@ -27,39 +30,55 @@ void ofApp::setup(){
     pos.y = 0;
     speed_x = 4;
     
+    rightWalk = true;
+    leftWalk = false;
+    
     width = ofGetWidth();
     height = ofGetHeight();
     
     gui.setup();
 
-    gui.add(camPosX.setup("camPosX", -2010, -3000, 3000));
-    gui.add(camPosY.setup("camPosY", 2070, -3000, 3000));
-    gui.add(camPosZ.setup("camPosZ", 1920, -3000, 3000));
+//    gui.add(camPosX.setup("camPosX", -2010, -3000, 3000));
+//    gui.add(camPosY.setup("camPosY", 2070, -3000, 3000));
+//    gui.add(camPosZ.setup("camPosZ", 1920, -3000, 3000));
     
-    gui.add(lightPosX.setup("lightPosX", -1560, -3000, 3000));
-    gui.add(lightPosY.setup("lightPosY", 1830, -3000, 3000));
-    gui.add(lightPosZ.setup("lightPosZ", 1320, -3000, 3000));
+    gui.add(camPosX.setup("camPosX", 1560, -3000, 3000));
+    gui.add(camPosY.setup("camPosY", 1290, -3000, 3000));
+    gui.add(camPosZ.setup("camPosZ", -2520, -3000, 3000));
     
-//    gui.add(modelX.setup("modelX", 0, -3000, 3000));
-//    gui.add(modelY.setup("modelY", 0, -3000, 3000));
+    gui.add(lightPosX.setup("lightPosX", 2220, -3000, 3000));
+    gui.add(lightPosY.setup("lightPosY", 2640, -3000, 3000));
+    gui.add(lightPosZ.setup("lightPosZ", -1200, -3000, 3000));
+    
+    gui.add(lookAtX.setup("lookAtX", -224.25, -3000, 3000));
+    gui.add(lookAtY.setup("lookAtY", -879, -3000, 3000));
+    gui.add(lookAtZ.setup("lookAtZ", -102.75, -3000, 3000));
+    
+    gui.add(Camfov.setup("Camfov", 31, 0, 180));
+    
+    gui.add(modelY.setup("modelY", 385, -3000, 3000));
+    
+    
+    gui.add(stageY.setup("stageY", 500, -3000, 3000));
     
     
     bAnimate = false;
     bAnimateMouse = false;
     animationPosition = 0;
     
-    charactor.setScale(0.7, 0.7, 0.7);
-    charactor.loadModel("charactor.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
-    charactor.setPosition(pos.x, pos.y, 0);
+    charactor.setScale(0.2, 0.2, 0.2);
+    charactor.loadModel("anima01.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
+    charactor.setPosition(pos.x, pos.y+200, 0);
     charactor.setRotation(0, -90, 0, 1, 0);
     
     
     charactor.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
     charactor.playAllAnimations(); //modelのアニメーション開始
     
-    stage.setScale(1, 1, 1);
-    stage.loadModel("stage.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
-    stage.setPosition(pos.x, pos.y, 0);
+    stage.setScale(3.5, 3.5, 3.5);
+    stage.loadModel("stage03.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
+    stage.setPosition(pos.x, pos.y+stageY, 0);
+    cout<< "mesh_count:"<< stage.getNumMeshes() <<endl;
     stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
     stage.playAllAnimations();
     
@@ -80,13 +99,22 @@ void ofApp::update(){
     
     //左端で跳ね返る
     if(pos.x < 0){
-        charactor.setRotation(0, -90, 0, 1, 0);
+        if(!leftWalk){
+            charactor.setRotation(0, -90, 0, 1, 0);
+            leftWalk = true;
+            rightWalk = true;
+        }
         speed_x = speed_x * -1;
     }
     
     //右端で跳ね返る
     if(pos.x > ofGetWidth()){
-        charactor.setRotation(0, 90, 0, 1, 0);
+        
+        if(rightWalk){
+            charactor.setRotation(0, 90, 0, 1, 0);
+            rightWalk = false;
+            leftWalk = false;
+        }
         speed_x = speed_x * -1;
     }
     
@@ -96,18 +124,19 @@ void ofApp::update(){
     
     if(bAnimateMouse) {
         charactor.setPositionForAllAnimations(animationPosition);
+        stage.setPositionForAllAnimations(animationPosition);
     }
 
-    mesh = charactor.getCurrentAnimatedMesh(0);
-    mesh = stage.getCurrentAnimatedMesh(0);
+    //mesh = charactor.getCurrentAnimatedMesh(0);
+    //mesh = stage.getCurrentAnimatedMesh(0);
 
     
     light.setPosition(lightPosX, lightPosY, lightPosZ);
     
 //    camera.setFov(30);
-    camera.setupPerspective(false, 30, 1.0, 10000.0);
+    camera.setupPerspective(false, Camfov, 2.0, 10000.0);
     camera.setPosition(camPosX, camPosY, camPosZ);
-    camera.lookAt(ofVec3f(0, 0, 0));
+    camera.lookAt(ofVec3f(lookAtX, lookAtY, lookAtZ));
     
 }
 
@@ -124,36 +153,39 @@ void ofApp::draw(){
     
 //    camera.setVFlip(true);
     
-    camera.begin(); //カメラ開始
-    
+     //カメラ開始
+  camera.begin();
         //stageModel描画
-    #ifndef TARGET_PROGRAMMABLE_GL
-        glShadeModel(GL_SMOOTH); //some model / light stuff
-    #endif
+//    #ifndef TARGET_PROGRAMMABLE_GL
+//        glShadeModel(GL_SMOOTH); //some model / light stuff
+//    #endif
         light.enable();
         ofEnableSeparateSpecularLight();
     
         ofPushMatrix();
-            ofScale(1, -1);
+    
+        camera.setVFlip(true);
+//            ofScale(1, -1);
+        ofRotateZ(180);
+//            ofScale(1, -1, 1);
+    
             stage.drawFaces();
         ofPopMatrix();
     
     
         //charactorModel描画
-    #ifndef TARGET_PROGRAMMABLE_GL
-        glShadeModel(GL_SMOOTH); //some model / light stuff
-    
-    #endif
+//    #ifndef TARGET_PROGRAMMABLE_GL
+//        glShadeModel(GL_SMOOTH); //some model / light stuff
+//    #endif
         light.enable();
         ofEnableSeparateSpecularLight();
         ofPushMatrix();
     
             ofScale(1, -1); //右手座標系へ変換
-//            ofTranslate(model.getPosition().x+100, model.getPosition().y, 0);
-//            ofTranslate(charactor.getPosition().x, charactor.getPosition().y, 0);
-//            ofRotateY(45);
+    
+//            ofTranslate(charactor.getPosition().x+100, charactor.getPosition().y, 0);
 //            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-//            ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
+//            ofTranslate(-charactor.getPosition().x, -charactor.getPosition().y, 0);
     
             charactor.drawFaces(); //model描画実行
     
@@ -161,8 +193,8 @@ void ofApp::draw(){
     
     
     
-        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
-        ofScale(1, -1, 1); //右手座標系へ変換
+//        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
+//        ofScale(1, -1, 1); //右手座標系へ変換
 
         ofDisableDepthTest(); // 深度テストを無効に
         light.disable(); // ライティングを無効に
@@ -233,6 +265,9 @@ void ofApp::keyPressed(int key){
     if(!bAnimate) {
         charactor.setPausedForAllAnimations(true);
     }
+//    if(key == ' '){
+//        n++;
+//    }
     
     mesh = stage.getMesh(0);
     stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
@@ -241,6 +276,8 @@ void ofApp::keyPressed(int key){
     if(!bAnimate) {
         stage.setPausedForAllAnimations(true);
     }
+    
+   
 }
 
 //--------------------------------------------------------------

@@ -53,6 +53,13 @@ public:
     
     ofxFloatSlider modelX;
     ofxFloatSlider modelY;
+    ofxFloatSlider stageY;
+    
+    ofxFloatSlider lookAtX;
+    ofxFloatSlider lookAtY;
+    ofxFloatSlider lookAtZ;
+    
+    ofxFloatSlider Camfov;
 };
 
 #endif
