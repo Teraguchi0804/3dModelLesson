@@ -10,6 +10,10 @@ bool rightWalk;
 bool leftWalk;
 
 int n = 0;
+
+
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 //    ofSetLogLevel(OF_LOG_VERBOSE); //ログレベルを取る(表示する)
