@@ -5,6 +5,7 @@
 #include "ofxGui.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofVboMesh.h"
+#include "ofxEasingFunc.h"
 
 class ofApp : public ofBaseApp{
     

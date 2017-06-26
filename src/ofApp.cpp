@@ -41,24 +41,20 @@ void ofApp::setup(){
     height = ofGetHeight();
     
     gui.setup();
-
-//    gui.add(camPosX.setup("camPosX", -2010, -3000, 3000));
-//    gui.add(camPosY.setup("camPosY", 2070, -3000, 3000));
-//    gui.add(camPosZ.setup("camPosZ", 1920, -3000, 3000));
     
-    gui.add(camPosX.setup("camPosX", 1560, -3000, 3000));
-    gui.add(camPosY.setup("camPosY", 1290, -3000, 3000));
-    gui.add(camPosZ.setup("camPosZ", -2520, -3000, 3000));
+    gui.add(camPosX.setup("camPosX", 2665.25, -5000, 5000));
+    gui.add(camPosY.setup("camPosY", 2533.25, -5000, 5000));
+    gui.add(camPosZ.setup("camPosZ", -2947.5, -5000, 5000));
     
-    gui.add(lightPosX.setup("lightPosX", 2220, -3000, 3000));
-    gui.add(lightPosY.setup("lightPosY", 2640, -3000, 3000));
-    gui.add(lightPosZ.setup("lightPosZ", -1200, -3000, 3000));
+    gui.add(lightPosX.setup("lightPosX", 2285.25, -3000, 3000));
+    gui.add(lightPosY.setup("lightPosY", 2361, -3000, 3000));
+    gui.add(lightPosZ.setup("lightPosZ", -2148.75, -3000, 3000));
     
-    gui.add(lookAtX.setup("lookAtX", -224.25, -3000, 3000));
-    gui.add(lookAtY.setup("lookAtY", -879, -3000, 3000));
-    gui.add(lookAtZ.setup("lookAtZ", -102.75, -3000, 3000));
+    gui.add(lookAtX.setup("lookAtX", 231.5, -3000, 3000));
+    gui.add(lookAtY.setup("lookAtY", -414, -3000, 3000));
+    gui.add(lookAtZ.setup("lookAtZ", -423.75, -3000, 3000));
     
-    gui.add(Camfov.setup("Camfov", 31, 0, 180));
+    gui.add(Camfov.setup("Camfov", 19, 0, 180));
     
     gui.add(modelY.setup("modelY", 385, -3000, 3000));
     
@@ -79,7 +75,7 @@ void ofApp::setup(){
     charactor.setLoopStateForAllAnimations(OF_LOOP_NORMAL); //modelのアニメーションフレームをループ
     charactor.playAllAnimations(); //modelのアニメーション開始
     
-    stage.setScale(3.5, 3.5, 3.5);
+    stage.setScale(4.5, 4.5, 4.5);
     stage.loadModel("stage03.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
     stage.setPosition(pos.x, pos.y+stageY, 0);
     cout<< "mesh_count:"<< stage.getNumMeshes() <<endl;
