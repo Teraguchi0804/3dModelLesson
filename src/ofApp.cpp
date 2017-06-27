@@ -12,6 +12,8 @@ bool leftWalk;
 int n = 0;
 
 
+float startTime = 0;
+
 
 
 //--------------------------------------------------------------
@@ -87,27 +89,45 @@ void ofApp::setup(){
         stage.setPausedForAllAnimations(true);
     }
 
-    
+    timerEnd = false;
+    startTime = ofGetElapsedTimef();
     
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+
+    
     
     pos.x = pos.x + speed_x;
 //    charactor.setRotation(0, -90, 0, 1, 0);
     
-    //左端で跳ね返る
-    if(pos.x < 0){
-        if(!leftWalk){
-            charactor.setRotation(0, -90, 0, 1, 0);
-            leftWalk = true;
-            rightWalk = true;
+    //右端で跳ね返る
+    if(pos.x == 0){
+        cout << ofGetElapsedTimef() << endl;
+        float timer = ofGetElapsedTimef() - startTime;
+//        cout << timer << endl;
+        
+//        timerEnd = true;
+        if(timer >= 3000){
+            
+//            timerEnd = true;
+//            if(timerEnd){
+//                cout << "Hellow World" << endl;
+//             timerEnd = false;
+//            }
+            if(!leftWalk){
+                charactor.setRotation(0, -90, 0, 1, 0);
+                leftWalk = true;
+                rightWalk = true;
+            }
         }
+        
         speed_x = speed_x * -1;
+
     }
     
-    //右端で跳ね返る
+    //左端で跳ね返る
     if(pos.x > ofGetWidth()){
         
         if(rightWalk){

@@ -61,6 +61,10 @@ public:
     ofxFloatSlider lookAtZ;
     
     ofxFloatSlider Camfov;
+    
+    //timer系
+//    float startTime;
+    bool timerEnd;
 };
 
 #endif
