@@ -12,7 +12,21 @@ bool leftWalk;
 int n = 0;
 
 
-float startTime = 0;
+float timer = 0;
+float initialTime = 0;
+
+void timerStart(){
+    timer = ofGetElapsedTimef();
+}
+
+void timerInitial(){
+    initialTime = ofGetElapsedTimef() - timer;
+}
+
+
+void timerReset(){
+    timer = 0;
+}
 
 
 
@@ -28,9 +42,6 @@ void ofApp::setup(){
     
     light.enable(); //ライティングを有効に
     ofEnableSeparateSpecularLight();
-    
-//    pos.x = ofGetWidth()/2;
-//    pos.y = ofGetHeight()/2;
     
     pos.x = 0;
     pos.y = 0;
@@ -80,7 +91,7 @@ void ofApp::setup(){
     stage.setScale(4.5, 4.5, 4.5);
     stage.loadModel("stage03.dae", false); //モデルデータの読み込み、第2匹数はモデルを最適化(optimize)するかどうか
     stage.setPosition(pos.x, pos.y+stageY, 0);
-    cout<< "mesh_count:"<< stage.getNumMeshes() <<endl;
+//    cout<< "mesh_count:"<< stage.getNumMeshes() <<endl;
     stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
     stage.playAllAnimations();
     
@@ -90,7 +101,7 @@ void ofApp::setup(){
     }
 
     timerEnd = false;
-    startTime = ofGetElapsedTimef();
+//    startTime = ofGetElapsedTimef();
     
 }
 
@@ -104,8 +115,9 @@ void ofApp::update(){
     
     //右端で跳ね返る
     if(pos.x == 0){
-        cout << ofGetElapsedTimef() << endl;
-        float timer = ofGetElapsedTimef() - startTime;
+//        cout << ofGetElapsedTimef() << endl;
+        
+//        float timer = ofGetElapsedTimef() - startTime;
 //        cout << timer << endl;
         
 //        timerEnd = true;
