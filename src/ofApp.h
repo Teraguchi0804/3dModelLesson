@@ -32,6 +32,7 @@ public:
     ofxAssimpModelLoader stage; //Addonの初期化
     
     bool bAnimate;
+    bool bAnimateStage;
     bool bAnimateMouse;
     float animationPosition;
     

@@ -6,29 +6,9 @@ float speed_y;
 float width;
 float height;
 
-bool rightWalk;
-bool leftWalk;
+bool Walk;
 
-int n = 0;
-
-
-float timer = 0;
-float initialTime = 0;
-
-void timerStart(){
-    timer = ofGetElapsedTimef();
-}
-
-void timerInitial(){
-    initialTime = ofGetElapsedTimef() - timer;
-}
-
-
-void timerReset(){
-    timer = 0;
-}
-
-
+float aac = 0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -47,8 +27,7 @@ void ofApp::setup(){
     pos.y = 0;
     speed_x = 4;
     
-    rightWalk = true;
-    leftWalk = false;
+    Walk = true;
     
     width = ofGetWidth();
     height = ofGetHeight();
@@ -76,6 +55,7 @@ void ofApp::setup(){
     
     
     bAnimate = false;
+    bAnimateStage = true;
     bAnimateMouse = false;
     animationPosition = 0;
     
@@ -96,8 +76,11 @@ void ofApp::setup(){
     stage.playAllAnimations();
     
     if(!bAnimate) {
-        charactor.setPausedForAllAnimations(true); //modelのアニメーションの一時停止(true or false)
-        stage.setPausedForAllAnimations(true);
+        charactor.setPausedForAllAnimations(false); //modelのアニメーションの一時停止(true or false)
+    }
+    
+    if(bAnimateStage){
+        stage.setPausedForAllAnimations(false);
     }
 
     timerEnd = false;
@@ -109,55 +92,50 @@ void ofApp::setup(){
 void ofApp::update(){
 
     
+//    float t = ofClamp(ofGetElapsedTimef() / 2., 0, 1);
+    // all functions take input 0. ~ 1., and outputs 0. ~ 1.
+//    float v = ofxEasingFunc::Cubic::easeInOut(t);
     
-    pos.x = pos.x + speed_x;
-//    charactor.setRotation(0, -90, 0, 1, 0);
+//    if(Walk){
+        pos.x = pos.x + speed_x;
+//    }
+    
+    
     
     //右端で跳ね返る
-    if(pos.x == 0){
-//        cout << ofGetElapsedTimef() << endl;
-        
-//        float timer = ofGetElapsedTimef() - startTime;
-//        cout << timer << endl;
-        
-//        timerEnd = true;
-        if(timer >= 3000){
+    if(pos.x == -700){
+        Walk = false;
+        if(!Walk){
+            aac += 0.05;
+            float t = ofClamp(aac, 0, 1);
+            // all functions take input 0. ~ 1., and outputs 0. ~ 1.
+            float v = ofxEasingFunc::Cubic::easeInOut(t);
             
-//            timerEnd = true;
-//            if(timerEnd){
-//                cout << "Hellow World" << endl;
-//             timerEnd = false;
-//            }
-            if(!leftWalk){
-                charactor.setRotation(0, -90, 0, 1, 0);
-                leftWalk = true;
-                rightWalk = true;
+            charactor.setRotation(0, -90 * v, 0, 1, 0);
+            if(v >= 1){
+                aac = 0;
+                Walk = true;
             }
         }
-        
-        speed_x = speed_x * -1;
+//        speed_x = speed_x * -1;
 
     }
     
+//    cout<< v <<endl;
+    
     //左端で跳ね返る
-    if(pos.x > ofGetWidth()){
-        
-        if(rightWalk){
+//    if(pos.x > ofGetWidth()){
+    if(pos.x == 500){
+//        Walk = false;
+//        if(!Walk){
             charactor.setRotation(0, 90, 0, 1, 0);
-            rightWalk = false;
-            leftWalk = false;
-        }
+//        }
         speed_x = speed_x * -1;
     }
     
     
     charactor.update(); //modelをアップデート
     stage.update();
-    
-    if(bAnimateMouse) {
-        charactor.setPositionForAllAnimations(animationPosition);
-        stage.setPositionForAllAnimations(animationPosition);
-    }
 
     //mesh = charactor.getCurrentAnimatedMesh(0);
     //mesh = stage.getCurrentAnimatedMesh(0);
@@ -165,7 +143,6 @@ void ofApp::update(){
     
     light.setPosition(lightPosX, lightPosY, lightPosZ);
     
-//    camera.setFov(30);
     camera.setupPerspective(false, Camfov, 2.0, 10000.0);
     camera.setPosition(camPosX, camPosY, camPosZ);
     camera.lookAt(ofVec3f(lookAtX, lookAtY, lookAtZ));
@@ -176,6 +153,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
+   
 
     ofSetColor(255); //塗りの色を設定
     ofEnableBlendMode(OF_BLENDMODE_ALPHA); //ブレンドモードの定義
@@ -183,50 +161,40 @@ void ofApp::draw(){
     
     charactor.setPosition(pos.z+modelX, pos.y+modelY, pos.x);
     
-//    camera.setVFlip(true);
+   
     
      //カメラ開始
   camera.begin();
+
+    
         //stageModel描画
-//    #ifndef TARGET_PROGRAMMABLE_GL
-//        glShadeModel(GL_SMOOTH); //some model / light stuff
-//    #endif
+    #ifndef TARGET_PROGRAMMABLE_GL
+        glShadeModel(GL_SMOOTH); //some model / light stuff
+    #endif
         light.enable();
         ofEnableSeparateSpecularLight();
     
         ofPushMatrix();
     
         camera.setVFlip(true);
-//            ofScale(1, -1);
         ofRotateZ(180);
-//            ofScale(1, -1, 1);
     
             stage.drawFaces();
         ofPopMatrix();
     
     
         //charactorModel描画
-//    #ifndef TARGET_PROGRAMMABLE_GL
-//        glShadeModel(GL_SMOOTH); //some model / light stuff
-//    #endif
+    #ifndef TARGET_PROGRAMMABLE_GL
+        glShadeModel(GL_SMOOTH); //some model / light stuff
+    #endif
         light.enable();
         ofEnableSeparateSpecularLight();
         ofPushMatrix();
     
             ofScale(1, -1); //右手座標系へ変換
-    
-//            ofTranslate(charactor.getPosition().x+100, charactor.getPosition().y, 0);
-//            ofRotate(-mouseX, 0, 1, 0); //マウスのX座標移動により回転
-//            ofTranslate(-charactor.getPosition().x, -charactor.getPosition().y, 0);
-    
             charactor.drawFaces(); //model描画実行
     
         ofPopMatrix();
-    
-    
-    
-//        ofTranslate(ofGetWidth()/2, ofGetHeight()/2, 0); //右手座標系に変換
-//        ofScale(1, -1, 1); //右手座標系へ変換
 
         ofDisableDepthTest(); // 深度テストを無効に
         light.disable(); // ライティングを無効に
@@ -305,9 +273,9 @@ void ofApp::keyPressed(int key){
     stage.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
     stage.playAllAnimations();
     
-    if(!bAnimate) {
-        stage.setPausedForAllAnimations(true);
-    }
+//    if(!bAnimate) {
+//        stage.setPausedForAllAnimations(true);
+//    }
     
    
 }
