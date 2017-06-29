@@ -121,8 +121,6 @@ void ofApp::update(){
 
     }
     
-//    cout<< v <<endl;
-    
     //左端で跳ね返る
 //    if(pos.x > ofGetWidth()){
     if(pos.x == 500){
