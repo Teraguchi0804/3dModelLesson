@@ -97,10 +97,6 @@ void ofApp::update(){
     charactor.update(); //modelをアップデート
     stage.update();
 
-    //mesh = charactor.getCurrentAnimatedMesh(0);
-    //mesh = stage.getCurrentAnimatedMesh(0);
-
-    
     light.setPosition(2285.25, 2361, -2148.75);
     
     camera.setupPerspective(false, 19, 2.0, 10000.0);
@@ -118,10 +114,8 @@ void ofApp::draw(){
     ofSetColor(255); //塗りの色を設定
     ofEnableBlendMode(OF_BLENDMODE_ALPHA); //ブレンドモードの定義
     ofEnableDepthTest(); //深度テストを有効にする関数
-    
     charactor.setPosition(pos.z, pos.y+385, pos.x);
     
-   
     
      //カメラ開始
   camera.begin();

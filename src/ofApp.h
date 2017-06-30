@@ -5,7 +5,7 @@
 #include "ofxGui.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofVboMesh.h"
-#include "ofxEasingFunc.h"
+//#include "ofxEasingFunc.h"
 
 class ofApp : public ofBaseApp{
     
@@ -27,9 +27,8 @@ public:
     void gotMessage(ofMessage msg);
     
     ofVec3f pos;
-    
-    ofxAssimpModelLoader charactor; //Addonの初期化
-    ofxAssimpModelLoader stage; //Addonの初期化
+    ofxAssimpModelLoader charactor;
+    ofxAssimpModelLoader stage;
     
     bool bAnimate;
     bool bAnimateStage;
@@ -48,5 +47,22 @@ public:
     ofLight	light;
     ofCamera camera;
 };
+
+namespace ofxEasingFunc
+{
+    struct Cubic
+    {
+        inline static float easeIn(const float t)
+        {
+            return t * t * t;
+        }
+        
+        inline static float easeInOut(const float t)
+        {
+            return (t < 0.5) ? easeIn(t * 2.0) * 0.5 : 1 - easeIn(2.0 - t * 2.0) * 0.5;
+        }
+    };
+}
+
 
 #endif
