@@ -33,39 +33,20 @@ public:
     
     bool bAnimate;
     bool bAnimateStage;
-    bool bAnimateMouse;
     float animationPosition;
+    
+    float speed_x;
+    float speed_y;
+    
+    float width;
+    float height;
+    
+    bool Walk;
+    float aac = 0;
     
     ofMesh mesh;
     ofLight	light;
     ofCamera camera;
-    ofxPanel gui;
-    
-    ofxFloatSlider objPosX;
-    ofxFloatSlider objPosY;
-    ofxFloatSlider objPosZ;
-    
-    ofxFloatSlider camPosX;
-    ofxFloatSlider camPosY;
-    ofxFloatSlider camPosZ;
-    
-    ofxFloatSlider lightPosX;
-    ofxFloatSlider lightPosY;
-    ofxFloatSlider lightPosZ;
-    
-    ofxFloatSlider modelX;
-    ofxFloatSlider modelY;
-    ofxFloatSlider stageY;
-    
-    ofxFloatSlider lookAtX;
-    ofxFloatSlider lookAtY;
-    ofxFloatSlider lookAtZ;
-    
-    ofxFloatSlider Camfov;
-    
-    //timer系
-//    float startTime;
-    bool timerEnd;
 };
 
 #endif
