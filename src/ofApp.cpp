@@ -24,6 +24,27 @@ void ofApp::setup(){
     width = ofGetWidth();
     height = ofGetHeight();
     
+    gui.setup();
+    
+    gui.add(camPosX.setup("camPosX", 2665.25, -5000, 5000));
+    gui.add(camPosY.setup("camPosY", 2533.25, -5000, 5000));
+    gui.add(camPosZ.setup("camPosZ", -2947.5, -5000, 5000));
+    
+    gui.add(lightPosX.setup("lightPosX", 2285.25, -3000, 3000));
+    gui.add(lightPosY.setup("lightPosY", 2361, -3000, 3000));
+    gui.add(lightPosZ.setup("lightPosZ", -2148.75, -3000, 3000));
+    
+    gui.add(lookAtX.setup("lookAtX", 0, -3000, 3000));
+    gui.add(lookAtY.setup("lookAtY", -510, -3000, 3000));
+    gui.add(lookAtZ.setup("lookAtZ", -30, -3000, 3000));
+    
+    gui.add(Camfov.setup("Camfov", 6.3, 0, 180));
+    
+    gui.add(modelY.setup("modelY", 385, -3000, 3000));
+    
+    
+    gui.add(stageY.setup("stageY", 500, -3000, 3000));
+    
     bAnimate = false;
     bAnimateStage = true;
     animationPosition = 0;
@@ -99,9 +120,11 @@ void ofApp::update(){
 
     light.setPosition(2285.25, 2361, -2148.75);
     
-    camera.setupPerspective(false, 19, 2.0, 10000.0);
-    camera.setPosition(2665.25, 2533.25, -2947.5);
-    camera.lookAt(ofVec3f(231.5, -414, -423.75));
+    camera.setupPerspective(false, Camfov, 2.0, 10000.0);
+//    camera.setPosition(2665.25, 2533.25, -2947.5);
+    camera.setPosition(camPosX, camPosY, camPosZ);
+//    camera.setPosition(2665 * width / 1024, 2533.25, -2947.5);
+    camera.lookAt(ofVec3f(lookAtX, lookAtY, lookAtZ));
     
 }
 
@@ -160,6 +183,8 @@ void ofApp::draw(){
     
 
     camera.end(); //カメラ終了
+    
+    gui.draw();
 
 }
 

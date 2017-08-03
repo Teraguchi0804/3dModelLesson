@@ -34,6 +34,20 @@ public:
     bool bAnimateStage;
     float animationPosition;
     
+    ofxPanel gui;
+    ofxFloatSlider camPosX;
+    ofxFloatSlider camPosY;
+    ofxFloatSlider camPosZ;
+    ofxFloatSlider lightPosX;
+    ofxFloatSlider lightPosY;
+    ofxFloatSlider lightPosZ;
+    ofxFloatSlider lookAtX;
+    ofxFloatSlider lookAtY;
+    ofxFloatSlider lookAtZ;
+    ofxFloatSlider Camfov;
+    ofxFloatSlider modelY;
+    ofxFloatSlider stageY;
+    
     float speed_x;
     float speed_y;
     
