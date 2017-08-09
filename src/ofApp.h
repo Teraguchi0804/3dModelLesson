@@ -45,6 +45,7 @@ public:
     ofxFloatSlider lookAtY;
     ofxFloatSlider lookAtZ;
     ofxFloatSlider Camfov;
+    ofxFloatSlider CamNear;
     ofxFloatSlider modelY;
     ofxFloatSlider stageY;
     

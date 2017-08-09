@@ -35,10 +35,11 @@ void ofApp::setup(){
     gui.add(lightPosZ.setup("lightPosZ", -2148.75, -3000, 3000));
     
     gui.add(lookAtX.setup("lookAtX", 0, -3000, 3000));
-    gui.add(lookAtY.setup("lookAtY", -510, -3000, 3000));
+    gui.add(lookAtY.setup("lookAtY", -578.25, -3000, 3000));
     gui.add(lookAtZ.setup("lookAtZ", -30, -3000, 3000));
     
-    gui.add(Camfov.setup("Camfov", 6.3, 0, 180));
+    gui.add(Camfov.setup("Camfov", 11.97, 0, 180));
+    gui.add(CamNear.setup("CamNear", 8.0, 0, 100));
     
     gui.add(modelY.setup("modelY", 385, -3000, 3000));
     
@@ -120,7 +121,7 @@ void ofApp::update(){
 
     light.setPosition(2285.25, 2361, -2148.75);
     
-    camera.setupPerspective(false, Camfov, 2.0, 10000.0);
+    camera.setupPerspective(false, Camfov, CamNear, 10000.0);
 //    camera.setPosition(2665.25, 2533.25, -2947.5);
     camera.setPosition(camPosX, camPosY, camPosZ);
 //    camera.setPosition(2665 * width / 1024, 2533.25, -2947.5);
