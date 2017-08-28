@@ -2,9 +2,18 @@
 	<objPosZ>435</objPosZ>
 	<objPosY>0</objPosY>
 	<objPosX>2580</objPosX>
-	<camPosX>0</camPosX>
-	<camPosY>375</camPosY>
-	<camPosZ>555</camPosZ>
+	<camPosX>2665.25</camPosX>
+	<camPosY>2533.25</camPosY>
+	<camPosZ>-2947.5</camPosZ>
 <group/>
-<modelY>-540</modelY>
+<modelY>385</modelY>
+<lightPosX>2285.25</lightPosX>
+	<lightPosY>2361</lightPosY>
+	<lightPosZ>-2148.75</lightPosZ>
+	<lookAtX>0</lookAtX>
+	<lookAtY>-578.25</lookAtY>
+	<lookAtZ>-30</lookAtZ>
+	<Camfov>11.97</Camfov>
+	<CamNear>8</CamNear>
+	<stageY>500</stageY>
 </group>
